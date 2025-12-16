@@ -22,9 +22,11 @@ rpc.onWorkletStart(async init => {
     throw new Error(stringifyError(error))
   }
 })
+
 rpc.onGetAddress(async payload => {
   try {
-    return { address: await wdk.getAddress(payload.network, payload.accountIndex) }
+    const address = await wdk.getAddress(payload.network, payload.accountIndex)
+    return { address }
   } catch (error) {
     throw new Error(stringifyError(error))
   }
@@ -41,10 +43,13 @@ rpc.onGetAddressBalance(async payload => {
 
 rpc.onQuoteSendTransaction(async payload => {
   try {
-    // Convert amount value to number
-    payload.options.value = Number(payload.options.value)
-    const transaction = await wdk.quoteSendTransaction(payload.network, payload.accountIndex, payload.options)
-    return { fee: transaction.fee.toString() }
+    // Convert value to number if it's a string
+    const options = { ...payload.options }
+    if (typeof options.value === 'string') {
+      options.value = Number(options.value)
+    }
+    const quote = await wdk.quoteSendTransaction(payload.network, payload.accountIndex, options)
+    return { fee: quote.fee.toString() }
   } catch (error) {
     throw new Error(stringifyError(error))
   }
@@ -52,71 +57,13 @@ rpc.onQuoteSendTransaction(async payload => {
 
 rpc.onSendTransaction(async payload => {
   try {
-    payload.options.value = Number(payload.options.value)
-    const transaction = await wdk.sendTransaction(payload.network, payload.accountIndex, payload.options)
-    return { fee: transaction.fee.toString(), hash: transaction.hash }
-  } catch (error) {
-    throw new Error(stringifyError(error))
-  }
-})
-
-/*****************
- *
- * ABSTRACTION
- *
- *****************/
-rpc.onGetAbstractedAddress(async payload => {
-  try {
-    return { address: await wdk.getAbstractedAddress(payload.network, payload.accountIndex) }
-  } catch (error) {
-    throw new Error(stringifyError(error))
-  }
-})
-
-rpc.onGetAbstractedAddressBalance(async payload => {
-  try {
-    const balance = await wdk.getAbstractedAddressBalance(payload.network, payload.accountIndex)
-    return { balance: balance.toString() }
-  } catch (error) {
-    throw new Error(stringifyError(error))
-  }
-})
-
-rpc.onGetAbstractedAddressTokenBalance(async payload => {
-  try {
-    const balance = await wdk.getAbstractedAddressTokenBalance(payload.network, payload.accountIndex, payload.tokenAddress)
-    return { balance: balance.toString() }
-  } catch (error) {
-    throw new Error(stringifyError(error))
-  }
-})
-
-rpc.onAbstractedAccountTransfer(async payload => {
-  try {
-    payload.options.amount = Number(payload.options.amount)
-    const transfer = await wdk.abstractedAccountTransfer(payload.network, payload.accountIndex, payload.options, payload.config)
-    return { fee: transfer.fee.toString(), hash: transfer.hash }
-  } catch (error) {
-    throw new Error(stringifyError(error))
-  }
-})
-
-rpc.onAbstractedSendTransaction(async payload => {
-  try {
-    const options = JSON.parse(payload.options)
-    const transfer = await wdk.abstractedSendTransaction(payload.network, payload.accountIndex, options, payload.config)
-    return { fee: transfer.fee.toString(), hash: transfer.hash }
-  } catch (error) {
-    throw new Error(stringifyError(error))
-  }
-})
-
-rpc.onAbstractedAccountQuoteTransfer(async payload => {
-  try {
-    payload.options.amount = Number(payload.options.amount)
-    console.log(payload)
-    const transfer = await wdk.abstractedAccountQuoteTransfer(payload.network, payload.accountIndex, payload.options, payload.config)
-    return { fee: transfer.fee.toString() }
+    // Convert value to number if it's a string
+    const options = { ...payload.options }
+    if (typeof options.value === 'string') {
+      options.value = Number(options.value)
+    }
+    const result = await wdk.sendTransaction(payload.network, payload.accountIndex, options)
+    return { fee: result.fee.toString(), hash: result.hash }
   } catch (error) {
     throw new Error(stringifyError(error))
   }
@@ -136,10 +83,16 @@ rpc.onGetTransactionReceipt(async payload => {
 
 rpc.onGetApproveTransaction(async payload => {
   try {
-    payload.amount = Number(payload.amount)
-    const approveTx = await wdk.getApproveTransaction(payload)
+    const approveOptions = { ...payload }
+    if (typeof approveOptions.amount === 'string') {
+      approveOptions.amount = Number(approveOptions.amount)
+    }
+    const approveTx = await wdk.getApproveTransaction(approveOptions)
     if (approveTx) {
-      approveTx.value = approveTx.value.toString()
+      // Convert value to string if it exists
+      if (approveTx.value !== undefined) {
+        approveTx.value = approveTx.value.toString()
+      }
       return approveTx
     }
     return {}
@@ -150,8 +103,10 @@ rpc.onGetApproveTransaction(async payload => {
 
 rpc.onDispose(() => {
   try {
-    wdk.dispose()
-    wdk = null
+    if (wdk) {
+      wdk.dispose()
+      wdk = null
+    }
   } catch (error) {
     throw new Error(stringifyError(error))
   }

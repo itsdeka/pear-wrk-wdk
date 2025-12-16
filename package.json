@@ -12,20 +12,20 @@
     "postinstall": "npm run gen:mobile-bundle"
   },
   "dependencies": {
-    "@wdk/wallet": "https://github.com/tetherto/wdk-wallet#ee0f6046b6128d0a096f18cc6ca7845ca4cedb12",
-    "@wdk/wallet-btc": "https://github.com/tetherto/wdk-wallet-btc#ed35de0b49344bb07736fc296a28b8465a8e8a6e",
-    "@wdk/wallet-evm": "https://github.com/tetherto/wdk-wallet-evm#74e281ea63f7df6e2590580bba988daeda021df6",
-    "@wdk/wallet-evm-erc-4337": "https://github.com/tetherto/wdk-wallet-evm-erc-4337#cc4431332b86d9c0609eaf833daa7295c13d8f86",
-    "@wdk/wallet-solana": "https://github.com/tetherto/wdk-wallet-solana#e132dc8247cd7b9e84aeaad6c20667a92830e212",
-    "@wdk/wallet-ton": "https://github.com/tetherto/wdk-wallet-ton#e2fc2c913fc003a0ad895822dc452db263faa259",
-    "@wdk/wallet-ton-gasless": "https://github.com/tetherto/wdk-wallet-ton-gasless#4b62e81488647158b2492e06c6cde176b69dd17d",
-    "@wdk/wallet-tron": "https://github.com/tetherto/wdk-wallet-tron#ec076473a5b8340599e005ab5ece8c8d246b3965",
-    "@wdk/wallet-tron-gasfree": "https://github.com/tetherto/wdk-wallet-tron-gasfree#fd57ed375801ae281e98c6882ea0f2ad4c2b30f5",
+    "@azure/core-asynciterator-polyfill": "^1.0.2",
+    "@tetherto/wdk": "^1.0.0-beta.4",
+    "@tetherto/wdk-wallet-evm-erc-4337": "^1.0.0-beta.3",
+    "@tetherto/wdk-wallet-spark": "^1.0.0-beta.5",
     "bare-ipc": "1.1.1",
+    "buffer": "^6.0.3",
+    "bufferutil": "^4.0.9",
     "encoding": "npm:bare-encoding@1.0.0",
     "hrpc": "4.0.1",
     "hyperschema": "1.12.4",
-    "os": "npm:bare-os@3.6.1"
+    "os": "npm:bare-os@3.6.1",
+    "react-native-get-random-values": "^2.0.0",
+    "text-encoding": "^0.7.0",
+    "utf-8-validate": "^5.0.10"
   },
   "devDependencies": {
     "rimraf": "6.0.1",
