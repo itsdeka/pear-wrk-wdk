@@ -143,18 +143,8 @@ rpc.onGetAddress(withErrorHandling(async payload => {
       identityKey: identityKeyInfo
     })
     
-    try {
-      const invoice = await account.createLightningInvoice({value: 0})
-      console.log('Invoice created successfully:', invoice.slice(0, 20) + '...')
-      return { address: invoice }
-    } catch (err) {
-      // Enhance error with identity key info
-      const enhancedError = new Error(
-        `Lightning invoice creation failed. Identity: ${identityKeyInfo}, Spark address: ${sparkAddress}, Path: ${account.path}. Original error: ${err.message}`
-      )
-      enhancedError.stack = err.stack
-      throw enhancedError
-    }
+    const invoice = await account.createLightningInvoice({value: 1, memo: "test"})
+    return { address: invoice }
   } else if (payload.network === 'bitcoin') {
     // Generate bitcoin static deposit address
     const account = await wdk.getAccount('spark', payload.accountIndex)
