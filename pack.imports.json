@@ -1,1 +1,24 @@
-{}
+{
+  "crypto": "bare-crypto",
+  "fs": "bare-fs",
+  "os": "bare-os",
+  "path": "bare-path",
+  "url": "bare-url",
+  "http": "bare-http1",
+  "https": "bare-https",
+  "http2": "bare-http2",
+  "zlib": "bare-zlib",
+  "stream": "bare-stream",
+  "buffer": "bare-buffer",
+  "events": "bare-events",
+  "diagnostics_channel": "dc-polyfill",
+  "async_hooks": "bare-async-hooks",
+  "util": "bare-node-util",
+  "perf_hooks": "bare-performance",
+  "net": "bare-net",
+  "tls": "bare-tls",
+  "process": "bare-process",
+  "dns": "bare-dns",
+  "assert": "bare-assert",
+  "child_process": "bare-subprocess"
+}
