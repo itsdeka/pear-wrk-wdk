@@ -143,8 +143,75 @@ rpc.onGetAddress(withErrorHandling(async payload => {
       identityKey: identityKeyInfo
     })
     
-    const invoice = await account.createLightningInvoice({value: 1, memo: "test"})
-    return { address: invoice }
+    try {
+      console.log('Calling createLightningInvoice...')
+      const invoiceResult = await Promise.race([
+        account.createLightningInvoice({value: 0}),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Invoice creation timeout after 30s')), 30000)
+        )
+      ])
+      
+      console.log('Invoice result type:', typeof invoiceResult)
+      console.log('Invoice result keys:', invoiceResult && typeof invoiceResult === 'object' ? Object.keys(invoiceResult) : 'N/A')
+      console.log('Invoice result:', JSON.stringify(invoiceResult, null, 2))
+      
+      if (!invoiceResult) {
+        throw new Error('Invoice creation returned null/undefined')
+      }
+      
+      // Handle both string and object return types
+      let invoiceString
+      if (typeof invoiceResult === 'string') {
+        invoiceString = invoiceResult
+      } else if (typeof invoiceResult === 'object') {
+        // Try common property names for invoice strings
+        invoiceString = invoiceResult.invoice || 
+                       invoiceResult.paymentRequest || 
+                       invoiceResult.payment_request ||
+                       invoiceResult.request ||
+                       invoiceResult.bolt11 ||
+                       invoiceResult.toString()
+        
+        // If still not a string, try to find any string property
+        if (typeof invoiceString !== 'string') {
+          for (const key in invoiceResult) {
+            if (typeof invoiceResult[key] === 'string' && invoiceResult[key].length > 20) {
+              invoiceString = invoiceResult[key]
+              break
+            }
+          }
+        }
+      } else {
+        invoiceString = String(invoiceResult)
+      }
+      
+      if (!invoiceString || typeof invoiceString !== 'string') {
+        throw new Error(`Invalid invoice: could not extract string from result. Type: ${typeof invoiceResult}, Value: ${JSON.stringify(invoiceResult)}`)
+      }
+      
+      if (invoiceString.length === 0) {
+        throw new Error('Invoice creation returned empty string')
+      }
+      
+      console.log('Invoice string extracted, length:', invoiceString.length)
+      console.log('Invoice preview:', invoiceString.substring(0, 50) + '...')
+      
+      // Ensure the response is properly formatted
+      const response = { address: invoiceString }
+      console.log('Returning response with address length:', response.address.length)
+      return response
+    } catch (err) {
+      console.error('Failed to create Lightning invoice:', err)
+      console.error('Error details:', {
+        message: err?.message,
+        stack: err?.stack,
+        name: err?.name,
+        cause: err?.cause
+      })
+      // Re-throw with a simpler error message to avoid encoding issues
+      throw new Error(`Lightning invoice creation failed: ${err?.message || String(err)}`)
+    }
   } else if (payload.network === 'bitcoin') {
     // Generate bitcoin static deposit address
     const account = await wdk.getAccount('spark', payload.accountIndex)
