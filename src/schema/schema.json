@@ -1,0 +1,77 @@
+{
+  "walletModules": [
+    {
+      "id": "evm-erc-4337",
+      "package": "@tetherto/wdk-wallet-evm-erc-4337",
+      "networks": ["ethereum", "polygon", "arbitrum", "plasma"]
+    },
+    {
+      "id": "spark",
+      "package": "@tetherto/wdk-wallet-spark",
+      "networks": ["spark"],
+      "prerequisites": [
+        {
+          "package": "@buildonspark/spark-frost-bare-addon",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "methods": [
+    {
+      "name": "log",
+      "send": true,
+      "request": {
+        "fields": [
+          { "name": "type", "type": "@wdk-core/log-type-enum" },
+          { "name": "data", "type": "string" }
+        ]
+      }
+    },
+    {
+      "name": "workletStart",
+      "request": {
+        "fields": [
+          { "name": "enableDebugLogs", "type": "uint", "required": false },
+          { "name": "seedPhrase", "type": "string", "required": false },
+          { "name": "seedBuffer", "type": "string", "required": false },
+          { "name": "config", "type": "string", "required": true }
+        ]
+      },
+      "response": {
+        "fields": [
+          { "name": "status", "type": "string" }
+        ]
+      }
+    },
+    {
+      "name": "callAccountMethod",
+      "request": {
+        "fields": [
+          { "name": "network", "type": "string", "required": true },
+          { "name": "accountIndex", "type": "uint", "required": true },
+          { "name": "methodName", "type": "string", "required": true },
+          { "name": "args", "type": "string", "required": false }
+        ]
+      },
+      "response": {
+        "fields": [
+          { "name": "result", "type": "string" }
+        ]
+      }
+    },
+    {
+      "name": "dispose",
+      "send": true,
+      "request": {
+        "fields": []
+      }
+    }
+  ],
+  "enums": [
+    {
+      "name": "log-type-enum",
+      "values": ["info", "error", "debug"]
+    }
+  ]
+}

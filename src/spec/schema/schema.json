@@ -1,0 +1,139 @@
+{
+  "version": 1,
+  "schema": [
+    {
+      "name": "log-type-enum",
+      "namespace": "wdk-core",
+      "offset": 1,
+      "enum": [
+        {
+          "key": "info",
+          "version": 1
+        },
+        {
+          "key": "error",
+          "version": 1
+        },
+        {
+          "key": "debug",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "log-request",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": 0,
+      "fields": [
+        {
+          "name": "type",
+          "type": "@wdk-core/log-type-enum",
+          "version": 1
+        },
+        {
+          "name": "data",
+          "type": "string",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "workletStart-request",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": 0,
+      "fields": [
+        {
+          "name": "enableDebugLogs",
+          "required": false,
+          "type": "uint",
+          "version": 1
+        },
+        {
+          "name": "seedPhrase",
+          "required": false,
+          "type": "string",
+          "version": 1
+        },
+        {
+          "name": "seedBuffer",
+          "required": false,
+          "type": "string",
+          "version": 1
+        },
+        {
+          "name": "config",
+          "required": true,
+          "type": "string",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "workletStart-response",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": 0,
+      "fields": [
+        {
+          "name": "status",
+          "type": "string",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "callAccountMethod-request",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": 3,
+      "fields": [
+        {
+          "name": "network",
+          "required": true,
+          "type": "string",
+          "version": 1
+        },
+        {
+          "name": "accountIndex",
+          "required": true,
+          "type": "uint",
+          "version": 1
+        },
+        {
+          "name": "methodName",
+          "required": true,
+          "type": "string",
+          "version": 1
+        },
+        {
+          "name": "args",
+          "required": false,
+          "type": "string",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "callAccountMethod-response",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": 0,
+      "fields": [
+        {
+          "name": "result",
+          "type": "string",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "dispose-request",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": -1,
+      "fields": []
+    }
+  ]
+}
