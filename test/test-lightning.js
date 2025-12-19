@@ -4,10 +4,10 @@
  * Test script to generate a Lightning invoice using the worklet
  * 
  * Usage:
- *   bare test-lightning.js
+ *   bare test/test-lightning.js
  * 
  * Or with a custom seed phrase:
- *   bare test-lightning.js "word1 word2 ... word12"
+ *   bare test/test-lightning.js "word1 word2 ... word12"
  */
 
 // Provide BareKit global before loading the worklet
@@ -26,10 +26,10 @@ global.BareKit = {
 }
 
 // Load the worklet
-require('./src/wdk-worklet.js')
+require('../src/wdk-worklet.js')
 
 // Create HRPC client
-const HRPC = require('./spec/hrpc/index.js')
+const HRPC = require('../spec/hrpc/index.js')
 const hrpc = new HRPC(clientIPC)
 
 // Get seed phrase from command line or use default test seed
