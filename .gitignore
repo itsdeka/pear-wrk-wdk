@@ -2,3 +2,5 @@
 /.idea
 .DS_Store
 /bundle
+# Auto-generated files
+src/wallet-modules.js
