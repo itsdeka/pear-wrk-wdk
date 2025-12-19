@@ -24,6 +24,14 @@ try {
   HRPC = require('../spec/hrpc')
   
   try {
+    // Ensure @buildonspark/bare is included in the bundle for dynamic imports
+    // This is a side-effect import to help the bundler trace the dependency
+    try {
+      require('@buildonspark/bare')
+    } catch (e) {
+      // Ignore if module not available, it will be dynamically imported later
+    }
+    
     const wdkModule = require('@tetherto/wdk')
     WDK = wdkModule.default || wdkModule.WDK || wdkModule
     
@@ -196,9 +204,10 @@ rpc.onGetAddress(withErrorHandling(async payload => {
       
       console.log('Invoice string extracted, length:', invoiceString.length)
       console.log('Invoice preview:', invoiceString.substring(0, 50) + '...')
+
       
       // Ensure the response is properly formatted
-      const response = { address: invoiceString }
+      const response = { address: invoiceResult.invoice.encodedInvoice }
       console.log('Returning response with address length:', response.address.length)
       return response
     } catch (err) {
