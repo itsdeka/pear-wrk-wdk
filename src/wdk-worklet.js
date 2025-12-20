@@ -343,7 +343,7 @@ rpc.onGetSeedAndEntropyFromMnemonic(withErrorHandling(async (request) => {
 }))
 
 /**
- * Initialize WDK with either seedPhrase or encryptionKey + encryptedSeed
+ * Initialize WDK with either encryptionKey + encryptedSeed
  */
 rpc.onInitializeWDK(withErrorHandling(async (init) => {
   if (!WDK) {
@@ -365,24 +365,17 @@ rpc.onInitializeWDK(withErrorHandling(async (init) => {
     throw new Error(`Missing network configurations: ${missingNetworks.join(', ')}`)
   }
   
-  let seedPhrase
+  let decryptedSeedBuffer
   
-  if (init.seedPhrase) {
-    // Initialize from seed phrase directly
-    console.log('Initializing WDK with seed phrase')
-    seedPhrase = init.seedPhrase
-  } else if (init.encryptionKey && init.encryptedSeed) {
+  if (init.encryptionKey && init.encryptedSeed) {
     // Initialize from encrypted seed
     console.log('Initializing WDK with encrypted seed')
-    const decryptedSeedBuffer = decrypt(init.encryptedSeed, init.encryptionKey)
-    seedPhrase = decryptedSeedBuffer.toString('utf8')
-    // Zero out the decrypted buffer after extracting the seed phrase
-    memzero(decryptedSeedBuffer)
+    decryptedSeedBuffer = decrypt(init.encryptedSeed, init.encryptionKey)
   } else {
-    throw new Error('Either seedPhrase or (encryptionKey + encryptedSeed) must be provided')
+    throw new Error('(encryptionKey + encryptedSeed) must be provided')
   }
   
-  wdk = new WDK(seedPhrase)
+  wdk = new WDK(decryptedSeedBuffer)
   
   for (const [networkName, config] of Object.entries(networkConfigs)) {
     if (config && typeof config === 'object') {
