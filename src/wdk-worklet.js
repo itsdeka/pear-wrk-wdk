@@ -155,8 +155,9 @@ const generateEntropy = (wordCount) => {
   // 12 words = 128 bits, 24 words = 256 bits
   const entropyLength = wordCount === 12 ? 16 : 32
   const entropyBuffer = crypto.randomBytes(entropyLength)
-  // Ensure proper Uint8Array conversion for @scure/bip39 compatibility
-  const entropy = Uint8Array.from(entropyBuffer)
+  // Create a new Uint8Array and copy bytes explicitly for @scure/bip39 compatibility
+  const entropy = new Uint8Array(entropyLength)
+  entropy.set(entropyBuffer)
   // Zero out the original buffer
   memzero(entropyBuffer)
   return entropy
@@ -271,8 +272,9 @@ rpc.onGetMnemonicFromEntropy(withErrorHandling(async (request) => {
   
   // Decrypt entropy
   const entropyBuffer = decrypt(encryptedEntropy, encryptionKey)
-  // Ensure proper Uint8Array conversion for @scure/bip39 compatibility
-  const entropy = Uint8Array.from(entropyBuffer)
+  // Create a new Uint8Array and copy bytes explicitly for @scure/bip39 compatibility
+  const entropy = new Uint8Array(entropyBuffer.length)
+  entropy.set(entropyBuffer)
   
   // Convert entropy to mnemonic
   const mnemonic = entropyToMnemonic(wordlist, entropy)
