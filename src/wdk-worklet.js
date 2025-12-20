@@ -51,6 +51,25 @@ const rpc = new HRPC(IPC)
 // State
 let wdk = null
 
+/**
+ * Securely zero out sensitive memory (memzero)
+ * @param {Buffer|Uint8Array|ArrayBuffer} buffer - Buffer to zero out
+ */
+const memzero = (buffer) => {
+  if (!buffer) return
+  
+  if (Buffer.isBuffer(buffer)) {
+    buffer.fill(0)
+  } else if (buffer instanceof Uint8Array) {
+    buffer.fill(0)
+  } else if (buffer instanceof ArrayBuffer) {
+    new Uint8Array(buffer).fill(0)
+  } else if (buffer.buffer instanceof ArrayBuffer) {
+    // Handle TypedArray views
+    new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength).fill(0)
+  }
+}
+
 // Crypto helper functions
 /**
  * Generate a strong encryption key (32 bytes for AES-256)
@@ -58,7 +77,9 @@ let wdk = null
  */
 const generateEncryptionKey = () => {
   const key = crypto.randomBytes(32)
-  return key.toString('base64')
+  const keyBase64 = key.toString('base64')
+  memzero(key)
+  return keyBase64
 }
 
 /**
@@ -81,7 +102,15 @@ const encrypt = (data, keyBase64) => {
   
   // Combine IV + encrypted data + auth tag
   const result = Buffer.concat([iv, encrypted, authTag])
-  return result.toString('base64')
+  const resultBase64 = result.toString('base64')
+  
+  // Zero out sensitive buffers (caller should zero input data buffer)
+  memzero(key)
+  memzero(iv)
+  memzero(encrypted)
+  memzero(authTag)
+  
+  return resultBase64
 }
 
 /**
@@ -102,7 +131,16 @@ const decrypt = (encryptedBase64, keyBase64) => {
   const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv)
   decipher.setAuthTag(authTag)
   
-  return Buffer.concat([decipher.update(encrypted), decipher.final()])
+  const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()])
+  
+  // Zero out sensitive buffers (but not the decrypted result we're returning)
+  memzero(key)
+  memzero(encryptedBuffer)
+  memzero(iv)
+  memzero(authTag)
+  memzero(encrypted)
+  
+  return decrypted
 }
 
 /**
@@ -117,7 +155,11 @@ const generateEntropy = (wordCount) => {
   // 12 words = 128 bits, 24 words = 256 bits
   const entropyLength = wordCount === 12 ? 16 : 32
   const entropyBuffer = crypto.randomBytes(entropyLength)
-  return new Uint8Array(entropyBuffer)
+  // Ensure proper Uint8Array conversion for @scure/bip39 compatibility
+  const entropy = Uint8Array.from(entropyBuffer)
+  // Zero out the original buffer
+  memzero(entropyBuffer)
+  return entropy
 }
 
 // Helper functions
@@ -206,7 +248,13 @@ rpc.onGenerateEntropyAndEncrypt(withErrorHandling(async (request) => {
   
   // Encrypt seed buffer and entropy
   const encryptedSeedBuffer = encrypt(seedBuffer, encryptionKey)
-  const encryptedEntropyBuffer = encrypt(Buffer.from(entropy), encryptionKey)
+  const entropyBuffer = Buffer.from(entropy)
+  const encryptedEntropyBuffer = encrypt(entropyBuffer, encryptionKey)
+  
+  // Zero out sensitive buffers
+  memzero(entropy)
+  memzero(seedBuffer)
+  memzero(entropyBuffer)
   
   return {
     encryptionKey,
@@ -223,10 +271,15 @@ rpc.onGetMnemonicFromEntropy(withErrorHandling(async (request) => {
   
   // Decrypt entropy
   const entropyBuffer = decrypt(encryptedEntropy, encryptionKey)
-  const entropy = new Uint8Array(entropyBuffer)
+  // Ensure proper Uint8Array conversion for @scure/bip39 compatibility
+  const entropy = Uint8Array.from(entropyBuffer)
   
   // Convert entropy to mnemonic
   const mnemonic = entropyToMnemonic(wordlist, entropy)
+  
+  // Zero out sensitive buffers
+  memzero(entropyBuffer)
+  memzero(entropy)
   
   return { mnemonic }
 }))
@@ -265,6 +318,8 @@ rpc.onInitializeWDK(withErrorHandling(async (init) => {
     console.log('Initializing WDK with encrypted seed')
     const decryptedSeedBuffer = decrypt(init.encryptedSeed, init.encryptionKey)
     seedPhrase = decryptedSeedBuffer.toString('utf8')
+    // Zero out the decrypted buffer after extracting the seed phrase
+    memzero(decryptedSeedBuffer)
   } else {
     throw new Error('Either seedPhrase or (encryptionKey + encryptedSeed) must be provided')
   }
