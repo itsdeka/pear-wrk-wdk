@@ -2,6 +2,9 @@
  * Main bundle export
  * This is the react-native-bare-kit compatible bundle
  */
-declare const bundle: string;
+export const bundle: string;
 
-export { bundle as default };
+/**
+ * HRPC class for handling RPC communication with the worklet
+ */
+export { HRPC } from './hrpc';
