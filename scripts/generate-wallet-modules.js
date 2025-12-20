@@ -10,6 +10,12 @@ const path = require('path');
 
 const schemaPath = path.join(__dirname, '../schema.json');
 const outputPath = path.join(__dirname, '../generated/wallet-modules.js');
+const outputDir = path.dirname(outputPath);
+
+// Ensure the generated directory exists
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
+}
 
 // Read schema config
 const schemaConfig = JSON.parse(fs.readFileSync(schemaPath, 'utf8'));
