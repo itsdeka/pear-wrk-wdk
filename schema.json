@@ -148,6 +148,121 @@
           "version": 1
         }
       ]
+    },
+    {
+      "name": "generateEntropyAndEncrypt-request",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": 0,
+      "fields": [
+        {
+          "name": "wordCount",
+          "required": true,
+          "type": "uint",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "generateEntropyAndEncrypt-response",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": 0,
+      "fields": [
+        {
+          "name": "encryptionKey",
+          "type": "string",
+          "version": 1
+        },
+        {
+          "name": "encryptedSeedBuffer",
+          "type": "string",
+          "version": 1
+        },
+        {
+          "name": "encryptedEntropyBuffer",
+          "type": "string",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "getMnemonicFromEntropy-request",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": 0,
+      "fields": [
+        {
+          "name": "encryptedEntropy",
+          "required": true,
+          "type": "string",
+          "version": 1
+        },
+        {
+          "name": "encryptionKey",
+          "required": true,
+          "type": "string",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "getMnemonicFromEntropy-response",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": 0,
+      "fields": [
+        {
+          "name": "mnemonic",
+          "type": "string",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "initializeWDK-request",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": 0,
+      "fields": [
+        {
+          "name": "seedPhrase",
+          "required": false,
+          "type": "string",
+          "version": 1
+        },
+        {
+          "name": "encryptionKey",
+          "required": false,
+          "type": "string",
+          "version": 1
+        },
+        {
+          "name": "encryptedSeed",
+          "required": false,
+          "type": "string",
+          "version": 1
+        },
+        {
+          "name": "config",
+          "required": true,
+          "type": "string",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "initializeWDK-response",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": 0,
+      "fields": [
+        {
+          "name": "status",
+          "type": "string",
+          "version": 1
+        }
+      ]
     }
   ]
 }

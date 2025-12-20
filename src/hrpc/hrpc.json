@@ -44,6 +44,45 @@
         "stream": false
       },
       "version": 1
+    },
+    {
+      "id": 4,
+      "name": "@wdk-core/generateEntropyAndEncrypt",
+      "request": {
+        "name": "@wdk-core/generateEntropyAndEncrypt-request",
+        "stream": false
+      },
+      "response": {
+        "name": "@wdk-core/generateEntropyAndEncrypt-response",
+        "stream": false
+      },
+      "version": 1
+    },
+    {
+      "id": 5,
+      "name": "@wdk-core/getMnemonicFromEntropy",
+      "request": {
+        "name": "@wdk-core/getMnemonicFromEntropy-request",
+        "stream": false
+      },
+      "response": {
+        "name": "@wdk-core/getMnemonicFromEntropy-response",
+        "stream": false
+      },
+      "version": 1
+    },
+    {
+      "id": 6,
+      "name": "@wdk-core/initializeWDK",
+      "request": {
+        "name": "@wdk-core/initializeWDK-request",
+        "stream": false
+      },
+      "response": {
+        "name": "@wdk-core/initializeWDK-response",
+        "stream": false
+      },
+      "version": 1
     }
   ]
 }

@@ -12,7 +12,13 @@ const methods = new Map([
   ['@wdk-core/dispose', 2],
   [2, '@wdk-core/dispose'],
   ['@wdk-core/callMethod', 3],
-  [3, '@wdk-core/callMethod']
+  [3, '@wdk-core/callMethod'],
+  ['@wdk-core/generateEntropyAndEncrypt', 4],
+  [4, '@wdk-core/generateEntropyAndEncrypt'],
+  ['@wdk-core/getMnemonicFromEntropy', 5],
+  [5, '@wdk-core/getMnemonicFromEntropy'],
+  ['@wdk-core/initializeWDK', 6],
+  [6, '@wdk-core/initializeWDK']
 ])
 
 class HRPC {
@@ -23,11 +29,17 @@ class HRPC {
       ['@wdk-core/log', getEncoding('@wdk-core/log-request')],
       ['@wdk-core/workletStart', getEncoding('@wdk-core/workletStart-request')],
       ['@wdk-core/dispose', getEncoding('@wdk-core/dispose-request')],
-      ['@wdk-core/callMethod', getEncoding('@wdk-core/callMethod-request')]
+      ['@wdk-core/callMethod', getEncoding('@wdk-core/callMethod-request')],
+      ['@wdk-core/generateEntropyAndEncrypt', getEncoding('@wdk-core/generateEntropyAndEncrypt-request')],
+      ['@wdk-core/getMnemonicFromEntropy', getEncoding('@wdk-core/getMnemonicFromEntropy-request')],
+      ['@wdk-core/initializeWDK', getEncoding('@wdk-core/initializeWDK-request')]
     ])
     this._responseEncodings = new Map([
       ['@wdk-core/workletStart', getEncoding('@wdk-core/workletStart-response')],
-      ['@wdk-core/callMethod', getEncoding('@wdk-core/callMethod-response')]
+      ['@wdk-core/callMethod', getEncoding('@wdk-core/callMethod-response')],
+      ['@wdk-core/generateEntropyAndEncrypt', getEncoding('@wdk-core/generateEntropyAndEncrypt-response')],
+      ['@wdk-core/getMnemonicFromEntropy', getEncoding('@wdk-core/getMnemonicFromEntropy-response')],
+      ['@wdk-core/initializeWDK', getEncoding('@wdk-core/initializeWDK-response')]
     ])
     this._rpc = new RPC(stream, async (req) => {
       const command = methods.get(req.command)
@@ -107,6 +119,18 @@ class HRPC {
     return this._call('@wdk-core/callMethod', args)
   }
 
+  async generateEntropyAndEncrypt (args) {
+    return this._call('@wdk-core/generateEntropyAndEncrypt', args)
+  }
+
+  async getMnemonicFromEntropy (args) {
+    return this._call('@wdk-core/getMnemonicFromEntropy', args)
+  }
+
+  async initializeWDK (args) {
+    return this._call('@wdk-core/initializeWDK', args)
+  }
+
   onLog (responseFn) {
     this._handlers['@wdk-core/log'] = responseFn
   }
@@ -121,6 +145,18 @@ class HRPC {
 
   onCallMethod (responseFn) {
     this._handlers['@wdk-core/callMethod'] = responseFn
+  }
+
+  onGenerateEntropyAndEncrypt (responseFn) {
+    this._handlers['@wdk-core/generateEntropyAndEncrypt'] = responseFn
+  }
+
+  onGetMnemonicFromEntropy (responseFn) {
+    this._handlers['@wdk-core/getMnemonicFromEntropy'] = responseFn
+  }
+
+  onInitializeWDK (responseFn) {
+    this._handlers['@wdk-core/initializeWDK'] = responseFn
   }
 
   _requestIsStream (command) {

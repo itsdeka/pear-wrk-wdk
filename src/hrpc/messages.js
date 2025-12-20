@@ -192,6 +192,173 @@ const encoding6 = {
   }
 }
 
+// @wdk-core/generateEntropyAndEncrypt-request
+const encoding7 = {
+  preencode (state, m) {
+    state.end++ // max flag is 0 so always one byte
+
+    c.uint.preencode(state, m.wordCount)
+  },
+  encode (state, m) {
+    const flags = 0
+
+    c.uint.encode(state, flags)
+
+    c.uint.encode(state, m.wordCount)
+  },
+  decode (state) {
+    const flags = c.uint.decode(state)
+
+    const wordCount = c.uint.decode(state)
+
+    return {
+      wordCount
+    }
+  }
+}
+
+// @wdk-core/generateEntropyAndEncrypt-response
+const encoding8 = {
+  preencode (state, m) {
+    state.end++ // max flag is 4 so always one byte
+
+    if (m.encryptionKey) c.string.preencode(state, m.encryptionKey)
+    if (m.encryptedSeedBuffer) c.string.preencode(state, m.encryptedSeedBuffer)
+    if (m.encryptedEntropyBuffer) c.string.preencode(state, m.encryptedEntropyBuffer)
+  },
+  encode (state, m) {
+    const flags =
+      (m.encryptionKey ? 1 : 0) |
+      (m.encryptedSeedBuffer ? 2 : 0) |
+      (m.encryptedEntropyBuffer ? 4 : 0)
+
+    c.uint.encode(state, flags)
+
+    if (m.encryptionKey) c.string.encode(state, m.encryptionKey)
+    if (m.encryptedSeedBuffer) c.string.encode(state, m.encryptedSeedBuffer)
+    if (m.encryptedEntropyBuffer) c.string.encode(state, m.encryptedEntropyBuffer)
+  },
+  decode (state) {
+    const flags = c.uint.decode(state)
+
+    return {
+      encryptionKey: (flags & 1) !== 0 ? c.string.decode(state) : null,
+      encryptedSeedBuffer: (flags & 2) !== 0 ? c.string.decode(state) : null,
+      encryptedEntropyBuffer: (flags & 4) !== 0 ? c.string.decode(state) : null
+    }
+  }
+}
+
+// @wdk-core/getMnemonicFromEntropy-request
+const encoding9 = {
+  preencode (state, m) {
+    state.end++ // max flag is 0 so always one byte
+
+    c.string.preencode(state, m.encryptedEntropy)
+    c.string.preencode(state, m.encryptionKey)
+  },
+  encode (state, m) {
+    const flags = 0
+
+    c.uint.encode(state, flags)
+
+    c.string.encode(state, m.encryptedEntropy)
+    c.string.encode(state, m.encryptionKey)
+  },
+  decode (state) {
+    const flags = c.uint.decode(state)
+
+    const encryptedEntropy = c.string.decode(state)
+    const encryptionKey = c.string.decode(state)
+
+    return {
+      encryptedEntropy,
+      encryptionKey
+    }
+  }
+}
+
+// @wdk-core/getMnemonicFromEntropy-response
+const encoding10 = {
+  preencode (state, m) {
+    state.end++ // max flag is 1 so always one byte
+
+    if (m.mnemonic) c.string.preencode(state, m.mnemonic)
+  },
+  encode (state, m) {
+    const flags = m.mnemonic ? 1 : 0
+
+    c.uint.encode(state, flags)
+
+    if (m.mnemonic) c.string.encode(state, m.mnemonic)
+  },
+  decode (state) {
+    const flags = c.uint.decode(state)
+
+    return {
+      mnemonic: (flags & 1) !== 0 ? c.string.decode(state) : null
+    }
+  }
+}
+
+// @wdk-core/initializeWDK-request
+const encoding11 = {
+  preencode (state, m) {
+    state.end++ // max flag is 4 so always one byte
+
+    if (m.seedPhrase) c.string.preencode(state, m.seedPhrase)
+    if (m.encryptionKey) c.string.preencode(state, m.encryptionKey)
+    if (m.encryptedSeed) c.string.preencode(state, m.encryptedSeed)
+    c.string.preencode(state, m.config)
+  },
+  encode (state, m) {
+    const flags =
+      (m.seedPhrase ? 1 : 0) |
+      (m.encryptionKey ? 2 : 0) |
+      (m.encryptedSeed ? 4 : 0)
+
+    c.uint.encode(state, flags)
+
+    if (m.seedPhrase) c.string.encode(state, m.seedPhrase)
+    if (m.encryptionKey) c.string.encode(state, m.encryptionKey)
+    if (m.encryptedSeed) c.string.encode(state, m.encryptedSeed)
+    c.string.encode(state, m.config)
+  },
+  decode (state) {
+    const flags = c.uint.decode(state)
+
+    return {
+      seedPhrase: (flags & 1) !== 0 ? c.string.decode(state) : null,
+      encryptionKey: (flags & 2) !== 0 ? c.string.decode(state) : null,
+      encryptedSeed: (flags & 4) !== 0 ? c.string.decode(state) : null,
+      config: c.string.decode(state)
+    }
+  }
+}
+
+// @wdk-core/initializeWDK-response
+const encoding12 = {
+  preencode (state, m) {
+    state.end++ // max flag is 1 so always one byte
+
+    if (m.status) c.string.preencode(state, m.status)
+  },
+  encode (state, m) {
+    const flags = m.status ? 1 : 0
+
+    c.uint.encode(state, flags)
+
+    if (m.status) c.string.encode(state, m.status)
+  },
+  decode (state) {
+    const flags = c.uint.decode(state)
+
+    return {
+      status: (flags & 1) !== 0 ? c.string.decode(state) : null
+    }
+  }
+}
+
 
 function setVersion (v) {
   version = v
@@ -223,6 +390,12 @@ function getEncoding (name) {
     case '@wdk-core/dispose-request': return encoding4
     case '@wdk-core/callMethod-request': return encoding5
     case '@wdk-core/callMethod-response': return encoding6
+    case '@wdk-core/generateEntropyAndEncrypt-request': return encoding7
+    case '@wdk-core/generateEntropyAndEncrypt-response': return encoding8
+    case '@wdk-core/getMnemonicFromEntropy-request': return encoding9
+    case '@wdk-core/getMnemonicFromEntropy-response': return encoding10
+    case '@wdk-core/initializeWDK-request': return encoding11
+    case '@wdk-core/initializeWDK-response': return encoding12
     default: throw new Error('Encoder not found ' + name)
   }
 }

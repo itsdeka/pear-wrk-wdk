@@ -12,6 +12,7 @@
     "postinstall": "npm run gen:mobile-bundle"
   },
   "dependencies": {
+    "@scure/bip39": "^1.6.0",
     "@tetherto/wdk": "1.0.0-beta.4",
     "@tetherto/wdk-wallet-evm-erc-4337": "1.0.0-beta.3",
     "@tetherto/wdk-wallet-spark": "github:HumanRupert/wdk-wallet-spark#feat/update-spark-sdk",
@@ -24,7 +25,8 @@
   "devDependencies": {
     "rimraf": "6.0.1",
     "standard": "17.1.2",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "bare-ipc": "^1.1.1"
   },
   "exports": {
     ".": {
