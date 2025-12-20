@@ -57,8 +57,8 @@ let wdk = null
  * @returns {string} Base64-encoded encryption key
  */
 const generateEncryptionKey = () => {
-  const key = crypto.getRandomValues(new Uint8Array(32))
-  return Buffer.from(key).toString('base64')
+  const key = crypto.randomBytes(32)
+  return key.toString('base64')
 }
 
 /**
@@ -69,7 +69,7 @@ const generateEncryptionKey = () => {
  */
 const encrypt = (data, keyBase64) => {
   const key = Buffer.from(keyBase64, 'base64')
-  const iv = crypto.getRandomValues(new Uint8Array(12)) // 96-bit IV for GCM
+  const iv = crypto.randomBytes(12) // 96-bit IV for GCM
   
   // Convert data to Buffer if needed
   const dataBuffer = Buffer.isBuffer(data) ? data : Buffer.from(data)
@@ -116,7 +116,8 @@ const generateEntropy = (wordCount) => {
   }
   // 12 words = 128 bits, 24 words = 256 bits
   const entropyLength = wordCount === 12 ? 16 : 32
-  return crypto.getRandomValues(new Uint8Array(entropyLength))
+  const entropyBuffer = crypto.randomBytes(entropyLength)
+  return new Uint8Array(entropyBuffer)
 }
 
 // Helper functions
