@@ -33,6 +33,10 @@
     },
     "./package": {
       "default": "./package.json"
+    },
+    "./src/hrpc": {
+      "types": "./types/hrpc.d.ts",
+      "default": "./src/hrpc/index.js"
     }
   },
   "author": "Tether",

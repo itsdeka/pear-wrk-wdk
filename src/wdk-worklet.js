@@ -12,7 +12,7 @@ if (typeof process !== 'undefined' && process.on) {
 // Initialize core dependencies
 // eslint-disable-next-line no-undef
 const { IPC: BareIPC } = BareKit
-const HRPC = require('../spec/hrpc')
+const HRPC = require('./hrpc')
 const rpcException = require('../src/exceptions/rpc-exception')
 
 // Load wallet modules from generated file (ensures proper bundling)

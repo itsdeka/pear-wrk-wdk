@@ -29,7 +29,7 @@ global.BareKit = {
 require('../src/wdk-worklet.js')
 
 // Create HRPC client
-const HRPC = require('../spec/hrpc/index.js')
+const HRPC = require('../src/hrpc/index.js')
 const hrpc = new HRPC(clientIPC)
 
 // Get seed phrase from command line or use default test seed
