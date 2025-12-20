@@ -153,7 +153,7 @@
       "name": "generateEntropyAndEncrypt-request",
       "namespace": "wdk-core",
       "compact": false,
-      "flagsPosition": 0,
+      "flagsPosition": -1,
       "fields": [
         {
           "name": "wordCount",
@@ -223,7 +223,7 @@
       "name": "getSeedAndEntropyFromMnemonic-request",
       "namespace": "wdk-core",
       "compact": false,
-      "flagsPosition": 0,
+      "flagsPosition": -1,
       "fields": [
         {
           "name": "mnemonic",
