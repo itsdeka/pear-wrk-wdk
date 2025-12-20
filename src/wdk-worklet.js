@@ -193,6 +193,21 @@ const encryptSecrets = (seed, entropy) => {
 }
 
 // Helper functions
+/**
+ * Safely stringify an object that may contain BigInt values
+ * Converts BigInt values to strings to avoid serialization errors
+ * @param {any} obj - Object to stringify
+ * @returns {string} JSON string with BigInt values converted to strings
+ */
+const safeStringify = (obj) => {
+  return JSON.stringify(obj, (key, value) => {
+    if (typeof value === 'bigint') {
+      return value.toString()
+    }
+    return value
+  })
+}
+
 const withErrorHandling = (handler) => {
   return async (...args) => {
     try {
@@ -411,7 +426,8 @@ rpc.onCallMethod(withErrorHandling(async (payload) => {
   )
   
   // Return as JSON string (raw result, no transformation)
-  return { result: JSON.stringify(result) }
+  // Use safeStringify to handle BigInt values
+  return { result: safeStringify(result) }
 }))
 
 rpc.onDispose(withErrorHandling(() => {
