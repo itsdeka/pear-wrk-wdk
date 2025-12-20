@@ -7,8 +7,9 @@
     "lint": "standard",
     "lint:fix": "standard --fix",
     "gen:wallet-modules": "node scripts/generate-wallet-modules.js",
-    "gen:macos-bundle": "npm run gen:wallet-modules && npx bare-pack --target darwin-arm64 --linked --out generated/bundle/wdk-worklet.bundle.js src/wdk-worklet.js",
-    "gen:mobile-bundle": "npm run gen:wallet-modules && npx bare-pack --target ios-arm64 --target ios-arm64-simulator --target ios-x64-simulator --target android-arm --target android-arm64 --target android-ia32 --target android-x64 --linked --imports ./pack.imports.json --out generated/bundle/wdk-worklet.mobile.bundle.js src/wdk-worklet.js",
+    "gen:hrpc": "node scripts/generate-hrpc.js",
+    "gen:macos-bundle": "npm run gen:wallet-modules && npm run gen:hrpc && npx bare-pack --target darwin-arm64 --linked --out generated/bundle/wdk-worklet.bundle.js src/wdk-worklet.js",
+    "gen:mobile-bundle": "npm run gen:wallet-modules && npm run gen:hrpc && npx bare-pack --target ios-arm64 --target ios-arm64-simulator --target ios-x64-simulator --target android-arm --target android-arm64 --target android-ia32 --target android-x64 --linked --imports ./pack.imports.json --out generated/bundle/wdk-worklet.mobile.bundle.js src/wdk-worklet.js",
     "postinstall": "npm run gen:mobile-bundle"
   },
   "dependencies": {
@@ -38,7 +39,7 @@
     },
     "./src/hrpc": {
       "types": "./types/hrpc.d.ts",
-      "default": "./src/hrpc/index.js"
+      "default": "./generated/hrpc/index.js"
     },
     "./types/rpc": {
       "types": "./types/rpc.d.ts"

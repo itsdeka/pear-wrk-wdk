@@ -12,7 +12,7 @@ if (typeof process !== 'undefined' && process.on) {
 // Initialize core dependencies
 // eslint-disable-next-line no-undef
 const { IPC: BareIPC } = BareKit
-const HRPC = require('./hrpc')
+const HRPC = require('../generated/hrpc')
 const rpcException = require('../src/exceptions/rpc-exception')
 const { entropyToMnemonic, mnemonicToSeedSync, mnemonicToEntropy } = require('@scure/bip39')
 const { wordlist } = require('@scure/bip39/wordlists/english')
