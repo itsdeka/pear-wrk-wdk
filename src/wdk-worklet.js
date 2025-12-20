@@ -23,7 +23,7 @@ let requiredNetworks = []
 let wdkLoadError = null
 
 try {
-  const walletModules = require('./wallet-modules.js')
+  const walletModules = require('../generated/wallet-modules.js')
   WDK = walletModules.WDK
   walletManagers = walletModules.walletManagers
   requiredNetworks = walletModules.requiredNetworks

@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 
 const schemaPath = path.join(__dirname, '../spec/schema/schema.json');
-const outputPath = path.join(__dirname, '../src/wallet-modules.js');
+const outputPath = path.join(__dirname, '../generated/wallet-modules.js');
 
 // Read schema config
 const schemaConfig = JSON.parse(fs.readFileSync(schemaPath, 'utf8'));
