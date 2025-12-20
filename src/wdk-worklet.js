@@ -14,7 +14,7 @@ if (typeof process !== 'undefined' && process.on) {
 const { IPC: BareIPC } = BareKit
 const HRPC = require('./hrpc')
 const rpcException = require('../src/exceptions/rpc-exception')
-const { entropyToMnemonic } = require('@scure/bip39')
+const { entropyToMnemonic, mnemonicToSeed, mnemonicToEntropy } = require('@scure/bip39')
 const { wordlist } = require('@scure/bip39/wordlists/english')
 const crypto = require('bare-crypto')
 
@@ -163,6 +163,35 @@ const generateEntropy = (wordCount) => {
   return entropy
 }
 
+/**
+ * Encrypt seed and entropy with a new encryption key
+ * @param {Uint8Array|Buffer} seed - Seed bytes to encrypt
+ * @param {Uint8Array|Buffer} entropy - Entropy bytes to encrypt
+ * @returns {Object} Object containing encryptionKey, encryptedSeedBuffer, and encryptedEntropyBuffer
+ */
+const encryptSecrets = (seed, entropy) => {
+  // Generate encryption key
+  const encryptionKey = generateEncryptionKey()
+  
+  // Convert to buffers if needed
+  const seedBuffer = Buffer.isBuffer(seed) ? seed : Buffer.from(seed)
+  const entropyBuffer = Buffer.isBuffer(entropy) ? entropy : Buffer.from(entropy)
+  
+  // Encrypt both secrets
+  const encryptedSeedBuffer = encrypt(seedBuffer, encryptionKey)
+  const encryptedEntropyBuffer = encrypt(entropyBuffer, encryptionKey)
+  
+  // Zero out sensitive buffers
+  memzero(seedBuffer)
+  memzero(entropyBuffer)
+  
+  return {
+    encryptionKey,
+    encryptedSeedBuffer,
+    encryptedEntropyBuffer
+  }
+}
+
 // Helper functions
 const withErrorHandling = (handler) => {
   return async (...args) => {
@@ -238,30 +267,20 @@ rpc.onGenerateEntropyAndEncrypt(withErrorHandling(async (request) => {
   
   // Generate mnemonic from entropy
   const mnemonic = entropyToMnemonic(entropy, wordlist)
+  const seedBuffer = mnemonicToSeed(mnemonic)
   
-  // Generate seed buffer from mnemonic (this is what WDK uses)
-  // The seed is typically derived from the mnemonic using PBKDF2
-  // For now, we'll use the mnemonic itself as the seed phrase
-  const seedBuffer = Buffer.from(mnemonic, 'utf8')
-  
-  // Generate encryption key
-  const encryptionKey = generateEncryptionKey()
-  
-  // Encrypt seed buffer and entropy
-  const encryptedSeedBuffer = encrypt(seedBuffer, encryptionKey)
+  // Convert entropy to buffer for encryption
   const entropyBuffer = Buffer.from(entropy)
-  const encryptedEntropyBuffer = encrypt(entropyBuffer, encryptionKey)
+  
+  // Encrypt both secrets using the shared helper function
+  const result = encryptSecrets(seedBuffer, entropyBuffer)
   
   // Zero out sensitive buffers
   memzero(entropy)
   memzero(seedBuffer)
   memzero(entropyBuffer)
   
-  return {
-    encryptionKey,
-    encryptedSeedBuffer,
-    encryptedEntropyBuffer
-  }
+  return result
 }))
 
 /**
@@ -284,6 +303,33 @@ rpc.onGetMnemonicFromEntropy(withErrorHandling(async (request) => {
   memzero(entropy)
   
   return { mnemonic }
+}))
+
+/**
+ * RPC handler: Convert mnemonic phrase to encrypted seed and entropy
+ * 
+ * Takes a BIP39 mnemonic phrase and derives both the seed (used by WDK) 
+ * and entropy (original random bytes), then encrypts both for secure storage.
+ * 
+ * @param {Object} request - The RPC request object
+ * @param {string} request.mnemonic - BIP39 mnemonic phrase (12 or 24 words)
+ * @returns {Promise<Object>} Encrypted seed and entropy with encryption key
+ */
+rpc.onGetSeedAndEntropyFromMnemonic(withErrorHandling(async (request) => {
+  const { mnemonic } = request
+  
+  // Validate mnemonic input
+  if (!mnemonic || typeof mnemonic !== 'string') {
+    throw new Error('Mnemonic phrase must be a non-empty string')
+  }
+  
+  // Derive seed from mnemonic (used by WDK for wallet operations)
+  const seed = await mnemonicToSeed(mnemonic)
+  // Extract entropy from mnemonic (original random bytes used to generate mnemonic)
+  const entropy = mnemonicToEntropy(mnemonic, wordlist)
+
+  // Encrypt both secrets and return with the encryption key
+  return encryptSecrets(seed, entropy)
 }))
 
 /**

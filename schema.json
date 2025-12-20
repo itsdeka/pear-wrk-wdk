@@ -220,6 +220,43 @@
       ]
     },
     {
+      "name": "getSeedAndEntropyFromMnemonic-request",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": 0,
+      "fields": [
+        {
+          "name": "mnemonic",
+          "required": true,
+          "type": "string",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "getSeedAndEntropyFromMnemonic-response",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": 0,
+      "fields": [
+        {
+          "name": "encryptionKey",
+          "type": "string",
+          "version": 1
+        },
+        {
+          "name": "encryptedSeedBuffer",
+          "type": "string",
+          "version": 1
+        },
+        {
+          "name": "encryptedEntropyBuffer",
+          "type": "string",
+          "version": 1
+        }
+      ]
+    },
+    {
       "name": "initializeWDK-request",
       "namespace": "wdk-core",
       "compact": false,

@@ -83,6 +83,19 @@
         "stream": false
       },
       "version": 1
+    },
+    {
+      "id": 7,
+      "name": "@wdk-core/getSeedAndEntropyFromMnemonic",
+      "request": {
+        "name": "@wdk-core/getSeedAndEntropyFromMnemonic-request",
+        "stream": false
+      },
+      "response": {
+        "name": "@wdk-core/getSeedAndEntropyFromMnemonic-response",
+        "stream": false
+      },
+      "version": 1
     }
   ]
 }
