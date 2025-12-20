@@ -237,7 +237,7 @@ rpc.onGenerateEntropyAndEncrypt(withErrorHandling(async (request) => {
   const entropy = generateEntropy(wordCount)
   
   // Generate mnemonic from entropy
-  const mnemonic = entropyToMnemonic(wordlist, entropy)
+  const mnemonic = entropyToMnemonic(entropy, wordlist)
   
   // Generate seed buffer from mnemonic (this is what WDK uses)
   // The seed is typically derived from the mnemonic using PBKDF2
