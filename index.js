@@ -1,0 +1,2 @@
+// Export a react-native-bare-kit compatible bundle that generates on postinstall.
+export { default as bundle } from './generated/bundle/wdk-worklet.mobile.bundle.mjs'

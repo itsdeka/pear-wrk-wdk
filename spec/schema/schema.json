@@ -1,5 +1,19 @@
 {
   "version": 1,
+  "config": {
+    "walletModules": {
+      "evmErc4337": {
+        "modulePath": "@tetherto/wdk-wallet-evm-erc-4337",
+        "networks": ["ethereum", "polygon", "arbitrum", "plasma"]
+      },
+      "spark": {
+        "modulePath": "@tetherto/wdk-wallet-spark",
+        "networks": ["spark"]
+      }
+    },
+    "requiredNetworks": ["ethereum", "polygon", "arbitrum", "plasma", "spark"],
+    "preloadModules": ["@buildonspark/spark-frost-bare-addon"]
+  },
   "schema": [
     {
       "name": "log-type-enum",
@@ -84,621 +98,56 @@
       ]
     },
     {
-      "name": "getAddress-request",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "network",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "accountIndex",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "getAddress-response",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": 0,
-      "fields": [
-        {
-          "name": "address",
-          "type": "string",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "getAddressBalance-request",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "network",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "accountIndex",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "getAddressBalance-response",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": 0,
-      "fields": [
-        {
-          "name": "balance",
-          "type": "string",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "quoteSendTransaction-request-options",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "to",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "value",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "quoteSendTransaction-request",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "network",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "accountIndex",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        },
-        {
-          "name": "options",
-          "required": true,
-          "type": "@wdk-core/quoteSendTransaction-request-options",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "quoteSendTransaction-response",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": 0,
-      "fields": [
-        {
-          "name": "fee",
-          "type": "uint",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "sendTransaction-request-options",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "to",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "value",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "sendTransaction-request",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "network",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "accountIndex",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        },
-        {
-          "name": "options",
-          "required": true,
-          "type": "@wdk-core/sendTransaction-request-options",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "sendTransaction-response",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": 0,
-      "fields": [
-        {
-          "name": "fee",
-          "type": "uint",
-          "version": 1
-        },
-        {
-          "name": "hash",
-          "type": "string",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "getAbstractedAddress-request",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "network",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "accountIndex",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "getAbstractedAddress-response",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": 0,
-      "fields": [
-        {
-          "name": "address",
-          "type": "string",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "getAbstractedAddressBalance-request",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "network",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "accountIndex",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "getAbstractedAddressBalance-response",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": 0,
-      "fields": [
-        {
-          "name": "balance",
-          "type": "string",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "getAbstractedAddressTokenBalance-request",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "network",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "accountIndex",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        },
-        {
-          "name": "tokenAddress",
-          "required": true,
-          "type": "string",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "getAbstractedAddressTokenBalance-response",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": 0,
-      "fields": [
-        {
-          "name": "balance",
-          "type": "string",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "abstractedAccountTransfer-request-options",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "token",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "recipient",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "amount",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "abstractedAccountTransfer-request",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "network",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "accountIndex",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        },
-        {
-          "name": "options",
-          "required": true,
-          "type": "@wdk-core/abstractedAccountTransfer-request-options",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "abstractedAccountTransfer-response",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": 0,
-      "fields": [
-        {
-          "name": "hash",
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "fee",
-          "type": "uint",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "getApproveTransaction-request",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "token",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "recipient",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "amount",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "getApproveTransaction-response",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "to",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "value",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        },
-        {
-          "name": "data",
-          "required": true,
-          "type": "string",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "abstractedSendTransaction-request-options",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "to",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "value",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        },
-        {
-          "name": "data",
-          "required": true,
-          "type": "string",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "abstractedSendTransaction-request-config",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "paymasterToken",
-          "required": true,
-          "type": "string",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "abstractedSendTransaction-request",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": 3,
-      "fields": [
-        {
-          "name": "network",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "accountIndex",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        },
-        {
-          "name": "options",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "config",
-          "required": false,
-          "type": "@wdk-core/abstractedSendTransaction-request-config",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "abstractedSendTransaction-response",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": 0,
-      "fields": [
-        {
-          "name": "hash",
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "fee",
-          "type": "uint",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "abstractedAccountQuoteTransfer-request-options",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "token",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "recipient",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "amount",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "abstractedAccountQuoteTransfer-request",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "network",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "accountIndex",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        },
-        {
-          "name": "options",
-          "required": true,
-          "type": "@wdk-core/abstractedAccountQuoteTransfer-request-options",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "abstractedAccountQuoteTransfer-response",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": 0,
-      "fields": [
-        {
-          "name": "fee",
-          "type": "uint",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "getTransactionReceipt-request",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": -1,
-      "fields": [
-        {
-          "name": "network",
-          "required": true,
-          "type": "string",
-          "version": 1
-        },
-        {
-          "name": "accountIndex",
-          "required": true,
-          "type": "uint",
-          "version": 1
-        },
-        {
-          "name": "hash",
-          "required": true,
-          "type": "string",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "name": "getTransactionReceipt-response",
-      "namespace": "wdk-core",
-      "compact": false,
-      "flagsPosition": 0,
-      "fields": [
-        {
-          "name": "receipt",
-          "type": "string",
-          "version": 1
-        }
-      ]
-    },
-    {
       "name": "dispose-request",
       "namespace": "wdk-core",
       "compact": false,
       "flagsPosition": -1,
       "fields": []
+    },
+    {
+      "name": "callMethod-request",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": -1,
+      "fields": [
+        {
+          "name": "methodName",
+          "required": true,
+          "type": "string",
+          "version": 1
+        },
+        {
+          "name": "network",
+          "required": true,
+          "type": "string",
+          "version": 1
+        },
+        {
+          "name": "accountIndex",
+          "required": true,
+          "type": "uint",
+          "version": 1
+        },
+        {
+          "name": "args",
+          "required": false,
+          "type": "string",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "name": "callMethod-response",
+      "namespace": "wdk-core",
+      "compact": false,
+      "flagsPosition": 0,
+      "fields": [
+        {
+          "name": "result",
+          "type": "string",
+          "version": 1
+        }
+      ]
     }
   ]
 }
