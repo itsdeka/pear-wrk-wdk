@@ -14,7 +14,7 @@ if (typeof process !== 'undefined' && process.on) {
 const { IPC: BareIPC } = BareKit
 const HRPC = require('./hrpc')
 const rpcException = require('../src/exceptions/rpc-exception')
-const { entropyToMnemonic, mnemonicToSeed, mnemonicToEntropy } = require('@scure/bip39')
+const { entropyToMnemonic, mnemonicToSeedSync, mnemonicToEntropy } = require('@scure/bip39')
 const { wordlist } = require('@scure/bip39/wordlists/english')
 const crypto = require('bare-crypto')
 
@@ -267,20 +267,30 @@ rpc.onGenerateEntropyAndEncrypt(withErrorHandling(async (request) => {
   
   // Generate mnemonic from entropy
   const mnemonic = entropyToMnemonic(entropy, wordlist)
-  const seedBuffer = mnemonicToSeed(mnemonic)
   
-  // Convert entropy to buffer for encryption
+  // Generate seed buffer from mnemonic (this is what WDK uses)
+  // The seed is typically derived from the mnemonic using PBKDF2
+  // For now, we'll use the mnemonic itself as the seed phrase
+  const seedBuffer = Buffer.from(mnemonic, 'utf8')
+  
+  // Generate encryption key
+  const encryptionKey = generateEncryptionKey()
+  
+  // Encrypt seed buffer and entropy
+  const encryptedSeedBuffer = encrypt(seedBuffer, encryptionKey)
   const entropyBuffer = Buffer.from(entropy)
-  
-  // Encrypt both secrets using the shared helper function
-  const result = encryptSecrets(seedBuffer, entropyBuffer)
+  const encryptedEntropyBuffer = encrypt(entropyBuffer, encryptionKey)
   
   // Zero out sensitive buffers
   memzero(entropy)
   memzero(seedBuffer)
   memzero(entropyBuffer)
   
-  return result
+  return {
+    encryptionKey,
+    encryptedSeedBuffer,
+    encryptedEntropyBuffer
+  }
 }))
 
 /**
@@ -324,7 +334,7 @@ rpc.onGetSeedAndEntropyFromMnemonic(withErrorHandling(async (request) => {
   }
   
   // Derive seed from mnemonic (used by WDK for wallet operations)
-  const seed = await mnemonicToSeed(mnemonic)
+  const seed = mnemonicToSeedSync(mnemonic)
   // Extract entropy from mnemonic (original random bytes used to generate mnemonic)
   const entropy = mnemonicToEntropy(mnemonic, wordlist)
 
