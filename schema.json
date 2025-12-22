@@ -4,14 +4,14 @@
     "walletModules": {
       "evmErc4337": {
         "modulePath": "@tetherto/wdk-wallet-evm-erc-4337",
-        "networks": ["ethereum", "polygon", "arbitrum", "plasma"]
+        "networks": ["ethereum", "polygon", "arbitrum", "plasma", "sepolia"]
       },
       "spark": {
         "modulePath": "@tetherto/wdk-wallet-spark",
         "networks": ["spark"]
       }
     },
-    "requiredNetworks": ["ethereum", "polygon", "arbitrum", "plasma", "spark"],
+    "requiredNetworks": ["ethereum", "polygon", "arbitrum", "plasma", "sepolia","spark"],
     "preloadModules": ["@buildonspark/spark-frost-bare-addon"]
   },
   "schema": [
