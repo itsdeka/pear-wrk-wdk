@@ -1,34 +1,7 @@
-// Copyright 2024 Tether Operations Limited
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-'use strict'
+const bundle = require('./generated/bundle/wdk-worklet.mobile.bundle.js');
+const HRPC = require('./generated/hrpc/index.js');
 
-/** @typedef {import('@wdk/wallet').FeeRates} FeeRates */
-
-/** @typedef {import('@wdk/wallet').TransferOptions} TransferOptions */
-/** @typedef {import('@wdk/wallet').TransferResult} TransferResult */
-/** @typedef {import('@wdk/wallet').IWalletAccount} IWalletAccount */
-
-/** @typedef {import('./src/wdk-core/wdk-manager.js').Seed} Seed */
-/** @typedef {import('./src/wdk-core/wdk-manager.js').Seeds} Seeds */
-/** @typedef {import('./src/wdk-core/wdk-manager.js').WdkConfig} WdkConfig */
-
-/** @typedef {import('./src/wdk-core/wdk-manager.js').TransferConfig} TransferConfig */
-
-export { WdkManager, Blockchain } from './src/wdk-core/wdk-manager.js'
-
-// Export spec/hrpc
-export { default as HRPC } from './spec/hrpc'
-
-// Export spec/schema
-export * as schema from './spec/schema'
+module.exports = {
+  bundle,
+  HRPC
+};

@@ -3,34 +3,47 @@
   "version": "0.1.1",
   "main": "index.js",
   "scripts": {
-    "build:types": "rimraf *.d.ts **/*.d.ts; tsc",
+    "build:types": "tsc --noEmit",
     "lint": "standard",
     "lint:fix": "standard --fix",
-    "gen:macos-bundle": "npx bare-pack --target darwin-arm64 --linked --out bundle/wdk-worklet.bundle.js src/wdk-worklet.js",
-    "gen:mobile-bundle": "npx bare-pack --target ios-arm64 --target ios-arm64-simulator --target ios-x64-simulator --target android-arm --target android-arm64 --target android-ia32 --target android-x64 --linked --imports ./pack.imports.json --out bundle/wdk-worklet.mobile.bundle.js src/wdk-worklet.js",
-    "gen:schema": "node src/schema/schema.js",
+    "gen:wallet-modules": "node scripts/generate-wallet-modules.js",
+    "gen:hrpc": "node scripts/generate-hrpc.js",
+    "gen:macos-bundle": "npm run gen:wallet-modules && npm run gen:hrpc && npx bare-pack --target darwin-arm64 --linked --out generated/bundle/wdk-worklet.bundle.js src/wdk-worklet.js",
+    "gen:mobile-bundle": "npm run gen:wallet-modules && npm run gen:hrpc && npx bare-pack --target ios-arm64 --target ios-arm64-simulator --target ios-x64-simulator --target android-arm --target android-arm64 --target android-ia32 --target android-x64 --linked --imports ./pack.imports.json --out generated/bundle/wdk-worklet.mobile.bundle.js src/wdk-worklet.js",
     "postinstall": "npm run gen:mobile-bundle"
   },
   "dependencies": {
-    "@wdk/wallet": "https://github.com/tetherto/wdk-wallet#ee0f6046b6128d0a096f18cc6ca7845ca4cedb12",
-    "@wdk/wallet-btc": "https://github.com/tetherto/wdk-wallet-btc#ed35de0b49344bb07736fc296a28b8465a8e8a6e",
-    "@wdk/wallet-evm": "https://github.com/tetherto/wdk-wallet-evm#74e281ea63f7df6e2590580bba988daeda021df6",
-    "@wdk/wallet-evm-erc-4337": "https://github.com/tetherto/wdk-wallet-evm-erc-4337#cc4431332b86d9c0609eaf833daa7295c13d8f86",
-    "@wdk/wallet-solana": "https://github.com/tetherto/wdk-wallet-solana#e132dc8247cd7b9e84aeaad6c20667a92830e212",
-    "@wdk/wallet-ton": "https://github.com/tetherto/wdk-wallet-ton#e2fc2c913fc003a0ad895822dc452db263faa259",
-    "@wdk/wallet-ton-gasless": "https://github.com/tetherto/wdk-wallet-ton-gasless#4b62e81488647158b2492e06c6cde176b69dd17d",
-    "@wdk/wallet-tron": "https://github.com/tetherto/wdk-wallet-tron#ec076473a5b8340599e005ab5ece8c8d246b3965",
-    "@wdk/wallet-tron-gasfree": "https://github.com/tetherto/wdk-wallet-tron-gasfree#fd57ed375801ae281e98c6882ea0f2ad4c2b30f5",
-    "bare-ipc": "1.1.1",
-    "encoding": "npm:bare-encoding@1.0.0",
+    "@scure/bip39": "^1.6.0",
+    "@tetherto/wdk": "1.0.0-beta.4",
+    "@tetherto/wdk-wallet-evm-erc-4337": "1.0.0-beta.3",
+    "@tetherto/wdk-wallet-spark": "1.0.0-beta.6",
+    "bufferutil": "4.0.9",
     "hrpc": "4.0.1",
     "hyperschema": "1.12.4",
-    "os": "npm:bare-os@3.6.1"
+    "text-encoding": "0.7.0",
+    "utf-8-validate": "5.0.10"
   },
   "devDependencies": {
     "rimraf": "6.0.1",
     "standard": "17.1.2",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "bare-ipc": "^1.1.1"
+  },
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./index.js"
+    },
+    "./package": {
+      "default": "./package.json"
+    },
+    "./src/hrpc": {
+      "types": "./types/hrpc.d.ts",
+      "default": "./generated/hrpc/index.js"
+    },
+    "./types/rpc": {
+      "types": "./types/rpc.d.ts"
+    }
   },
   "author": "Tether",
   "license": "Apache-2.0"

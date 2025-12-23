@@ -1,11 +1,10 @@
-export { default } from "./src/wdk-core/wdk-manager.js";
-export { default as HRPC } from "./spec/hrpc/index.js";
-export { default as bundle } from "./bundle/worklet.bundle.mjs";
-export type FeeRates = import("@tetherto/wdk-wallet").FeeRates;
-export type TransferOptions = import("@tetherto/wdk-wallet").TransferOptions;
-export type TransferResult = import("@tetherto/wdk-wallet").TransferResult;
-export type IWalletAccount = import("@tetherto/wdk-wallet").IWalletAccount;
-export type Seed = import("./src/wdk-core/wdk-manager.js").Seed;
-export type Seeds = import("./src/wdk-core/wdk-manager.js").Seeds;
-export type WdkConfig = import("./src/wdk-core/wdk-manager.js").WdkConfig;
-export type TransferConfig = import("./src/wdk-core/wdk-manager.js").TransferConfig;
+/**
+ * Main bundle export
+ * This is the react-native-bare-kit compatible bundle
+ */
+export const bundle: string;
+
+/**
+ * HRPC class for handling RPC communication with the worklet
+ */
+export { HRPC } from './hrpc';
