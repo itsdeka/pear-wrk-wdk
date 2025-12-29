@@ -302,10 +302,6 @@ function registerRpcHandlers(rpc, context) {
     
     handlerContext.wdk = new WDK(decryptedSeedBuffer)
     
-    // Zero out the decrypted seed buffer after WDK initialization
-    // Note: The WDK may have copied the seed internally, but we should still zero our copy
-    memzero(decryptedSeedBuffer)
-    
     for (const [networkName, config] of Object.entries(networkConfigs)) {
       if (config && typeof config === 'object') {
         const walletManager = walletManagers[networkName]
