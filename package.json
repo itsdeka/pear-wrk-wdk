@@ -17,7 +17,7 @@
   "dependencies": {
     "@scure/bip39": "^1.6.0",
     "@tetherto/wdk": "1.0.0-beta.4",
-    "@tetherto/wdk-wallet-evm-erc-4337": "github:itsdeka/wdk-wallet-evm-erc-4337#fix/temp-relay-kit",
+    "@tetherto/wdk-wallet-evm-erc-4337": "github:itsdeka/wdk-wallet-evm-erc-4337-1#fix/temp-relay-kit",
     "@tetherto/wdk-wallet-spark": "1.0.0-beta.6",
     "hrpc": "4.0.1",
     "hyperschema": "1.12.4",
