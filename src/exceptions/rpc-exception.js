@@ -1,4 +1,5 @@
 const ERROR_CODES = require('./error-codes')
+const { safeStringify } = require('../utils/safe-stringify')
 
 /**
  * @typedef {Object} rpcExceptionPayload
@@ -15,23 +16,33 @@ const ERROR_CODES = require('./error-codes')
  */
 
 /**
- * Safely stringify an object that may contain BigInt values
- * Converts BigInt values to strings to avoid serialization errors
- * @param {any} obj - Object to stringify
- * @returns {string} JSON string with BigInt values converted to strings
+ * Check if we're in development mode
+ * @returns {boolean} True if in development mode
  */
-function safeStringify (obj) {
-  return JSON.stringify(obj, (key, value) => {
-    if (typeof value === 'bigint') {
-      return value.toString()
-    }
-    return value
-  })
+function isDevelopmentMode () {
+  // Check for common development indicators
+  return typeof process !== 'undefined' && (
+    process.env.NODE_ENV === 'development' ||
+    process.env.DEBUG === '1' ||
+    process.env.DEBUG === 'true'
+  )
 }
 
+/**
+ * Sanitize error message to prevent information leakage
+ * Only includes stack traces in development mode
+ * @param {Error|any} error - Error to stringify
+ * @returns {string} Sanitized error string
+ */
 function stringifyError (error) {
   if (error instanceof Error) {
-    return `${error.message}: ${error.stack}`
+    if (isDevelopmentMode()) {
+      // Include full stack trace in development
+      return `${error.message}: ${error.stack}`
+    } else {
+      // Only include message in production
+      return error.message
+    }
   }
 
   try {
@@ -56,7 +67,37 @@ function rpcException (payload) {
   }
 }
 
+/**
+ * Create a structured error response that preserves error codes and metadata
+ * @param {Error|any} error - The error object
+ * @param {ERROR_CODES} [code] - Optional error code, will be inferred if not provided
+ * @param {string} [message] - Optional custom message
+ * @returns {rpcExceptionResponse} Structured error response
+ */
+function createStructuredError (error, code, message) {
+  // Infer error code from error type if not provided
+  if (!code) {
+    if (error instanceof TypeError) {
+      code = ERROR_CODES.BAD_REQUEST
+    } else if (error.message && error.message.includes('WDK')) {
+      code = ERROR_CODES.WDK_MANAGER_INIT
+    } else if (error.message && error.message.includes('balance')) {
+      code = ERROR_CODES.ACCOUNT_BALANCES
+    } else {
+      code = ERROR_CODES.UNKNOWN
+    }
+  }
+
+  return {
+    code,
+    message: message || (error instanceof Error ? error.message : String(error)),
+    error: stringifyError(error)
+  }
+}
+
 module.exports = {
   rpcException,
-  stringifyError
+  stringifyError,
+  createStructuredError,
+  isDevelopmentMode
 }
