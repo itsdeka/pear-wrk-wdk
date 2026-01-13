@@ -9,9 +9,13 @@
       "spark": {
         "modulePath": "@tetherto/wdk-wallet-spark",
         "networks": ["spark"]
+      },
+      "bitcoin": {
+        "modulePath": "@tetherto/wdk-wallet-btc",
+        "networks": ["bitcoin"]
       }
     },
-    "requiredNetworks": ["ethereum", "polygon", "arbitrum", "plasma", "sepolia","spark"],
+    "requiredNetworks": ["ethereum", "polygon", "arbitrum", "plasma", "sepolia","spark","bitcoin"],
     "preloadModules": ["@buildonspark/spark-frost-bare-addon"]
   },
   "schema": [
