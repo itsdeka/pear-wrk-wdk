@@ -19,7 +19,7 @@
     "@tetherto/wdk": "1.0.0-beta.4",
     "@tetherto/wdk-wallet-btc": "1.0.0-beta.4",
     "@tetherto/wdk-wallet-evm-erc-4337": "github:AlonzoRicardo/wdk-wallet-evm-erc-4337#5ca8973ac059d89b0ca4ce8e9a4bc386cee2e9b0",
-    "@tetherto/wdk-wallet-spark": "1.0.0-beta.6",
+    "@tetherto/wdk-wallet-spark": "1.0.0-beta.7",
     "bare-pack": "^1.5.0",
     "bufferutil": "^4.1.0",
     "hrpc": "4.0.1",
