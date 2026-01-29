@@ -51,5 +51,8 @@
     }
   },
   "author": "Tether",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "overrides": {
+    "@buildonspark/bare": "0.0.30"
+  }
 }
